@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "grafo.h"
+// #include "fila.h"
 
 //------------------------------------------------------------------------------
 // desaloca toda a memória usada em *g
@@ -93,7 +94,10 @@ grafo le_grafo(FILE *input) {
       char viz[TAMANHO];
       
       strncpy(vert, linha, strcspn(linha, " "));
+      // printf("n: %d\n", g.n);
       trataVertice(&g, vert);
+      // printf("n: %d\n", g.n);
+      // g.v[g.n]->distancia=0;
       if (strcmp(linha, vert) != 0) {
         strncpy(viz, linha+strcspn(linha, " ")+1, strcspn(linha, "\0"));
         trataVizinho(&g, vert, viz);
@@ -119,10 +123,15 @@ grafo le_grafo(FILE *input) {
 //------------------------------------------------------------------------------
 // lê um vertice 
 
-vertice le_vertice() {
-  vertice v;
+vertice *le_vertice(grafo *g) {
+  vertice *v;
+  char *nome;
+  int i;
   printf("Digite o nome do vértice:\n");
-  scanf("%s", v.nome);
+  scanf("%s", nome);
+  for (i=0; i<g->n; i++)
+    if (strcmp(g->v[i]->nome, nome)==0)
+      v = g->v[i];
 
   return v;
 }
@@ -136,13 +145,114 @@ void imprimeGrafo(grafo g) {
   }
 }
 
+//------------------------------------------------------------------------------
+// encontra o menor caminho entre cada par do vértice v de g
+// 
 
+void printFila(struct Fila *fila) {
+  int cont, i;
+  // printf("%d %d\n", fila->primeiro, fila->n);
+
+	for ( cont=0, i= fila->primeiro; cont < fila->n; cont++){
+
+		printf("%s - ",fila->v[i++]->nome);
+
+		if (i == fila->capacidade)
+			i=0;
+
+	}
+	printf("\n\n");
+}
+
+void caminhos_minimos(vertice *raiz) {
+  int i;
+  struct Fila fila;
+  vertice *v, *w;
+  criarFila(&fila, 10);
+  raiz->distancia = 0;
+  raiz->estado = 1;
+  inserir(&fila, raiz);
+  // printFila(&fila);
+  printf("%d %d\n", fila.v[fila.primeiro]->numVizinhos, raiz->numVizinhos);
+  for (; !estaVazia(&fila) ;) {
+    v = remover(&fila);
+    for (i=0; i<v->numVizinhos; i++) {
+      w = v->vizinhos[i];
+      if (w->estado==0) {
+        w->pai = v;
+        w->distancia = w->pai->distancia + 1;
+        inserir(&fila, w);
+        w->estado = 1;
+      }
+    }
+    v->estado = 2;
+  }
+  // v <- fila vazia
+  // r.dist <- 0
+  // enfile r em V
+  // r.estado <- 1
+  // Enquanto V!=0
+  //   desenfile um vértice v de V
+  //   Para cada w em fronteira de v em g
+  //     Se w.estado = 0
+  //       w.pai <- v
+  //       w.dist <= w.pai.dist + 1
+  //       enfile w em V
+  //       w.estado <- 1
+  //   v.estado <- 2
+}
 
 //------------------------------------------------------------------------------
 // devolve o coeficiente de proximidade do vértice v de g
 // 
 
-double coeficiente_proximidade(grafo g, vertice v) {
-  return 0;
+double coeficiente_proximidade(grafo g, vertice *v) {
+
+  int somaDistVizinhos=0;
+  int i,j;
+  caminhos_minimos(v);
+  printf("\n-------distancias--------\n");
+  for (int i=0; i<g.n; i++) {
+    printf("%d\n", g.v[i]->distancia);
+  }
+  for (i=0; i<g.n; i++) {
+    if (strcmp(v->nome, g.v[i]->nome) != 0)
+      somaDistVizinhos += g.v[i]->distancia;
+  }
+  double Cp = g.n / somaDistVizinhos;
+  return Cp;
 }
 
+
+
+
+void criarFila( struct Fila *f, int c ) { 
+	f->capacidade = c;
+	f->v = (vertice**) malloc(f->capacidade * sizeof(vertice*));
+	f->primeiro = 0;
+	f->ultimo = -1;
+	f->n = 0; 
+}
+
+void inserir(struct Fila *f, vertice *v) {   // insere no final
+	if(f->ultimo == f->capacidade-1)
+		f->ultimo = -1;
+
+	f->ultimo++;
+	f->v[f->ultimo] = v; // incrementa ultimo e insere
+	f->n++; // mais um item inserido
+}
+
+vertice *remover( struct Fila *f ) { // pega o item do começo da fila
+	vertice *temp = f->v[f->primeiro++]; // pega o valor e incrementa o primeiro
+
+	if(f->primeiro == f->capacidade)
+		f->primeiro = 0;
+
+	f->n--;  // um item retirado
+	return temp;
+}
+
+int estaVazia( struct Fila *f ) { // retorna verdadeiro se a fila está vazia
+	return (f->n==0);
+}

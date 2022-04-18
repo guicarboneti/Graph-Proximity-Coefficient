@@ -14,7 +14,9 @@ typedef struct vertice vertice;
 struct vertice {
   char nome[TAMANHO];
   vertice** vizinhos;
-  int distancias[50];
+  vertice* pai;
+  int estado;
+  int distancia;
   int numVizinhos;
 };
 
@@ -54,17 +56,45 @@ grafo le_grafo(FILE *input);
 //------------------------------------------------------------------------------
 // pede para o usuário entrar com um vértice.
 
-vertice le_vertice(void);  
+vertice *le_vertice(grafo *g);
+
+
+//------------------------------------------------------------------------------
+// encontra o menor caminho entre cada par do vértice v de g
+// 
+
+void caminhos_minimos(vertice *v);
+
 
 //------------------------------------------------------------------------------
 // devolve o coeficiente de proximidade do vértice v de g
 // 
 
-double coeficiente_proximidade(grafo g, vertice v);
+double coeficiente_proximidade(grafo g, vertice *v);
+
 
 //------------------------------------------------------------------------------
 // imprime grafo
 
 void imprimeGrafo(grafo g);
+
+
+struct Fila {
+	int capacidade;
+	vertice **v;
+	int primeiro;
+	int ultimo;
+	int n;
+};
+
+void criarFila( struct Fila *f, int c );
+
+void inserir(struct Fila *f, vertice *v);  // insere no final
+
+vertice *remover( struct Fila *f );  // pega o item do começo da fila
+
+int estaVazia( struct Fila *f );  // retorna verdadeiro se a fila está vazia
+
+void printFila(struct Fila *fila);
 
 #endif

@@ -34,8 +34,10 @@ void trataVertice(grafo* g, char* palavra) {
   if (busca(g, palavra) == g->n) {
     vertice* novo = (vertice*)malloc(sizeof(vertice*));
     strcpy(novo->nome, palavra);
-    novo->vizinhos = (vertice**)calloc(50, sizeof(vertice*));
     novo->numVizinhos = 0;
+    novo->estado=0;
+    novo->distancia=0;
+    novo->vizinhos = (vertice**)calloc(50, sizeof(vertice*));
     g->v[g->n] = novo;
     g->n++;
   }
@@ -72,6 +74,7 @@ void trataVizinho(grafo* g, char* vert, char* vizinho) {
 //         NULL, em caso de erro 
 
 grafo le_grafo(FILE *input) {
+  // grafo *g = (grafo*)malloc(sizeof(grafo));
   grafo g;
   g.n = 0;
   g.v = (vertice**)calloc(50, sizeof(vertice*));
@@ -94,10 +97,7 @@ grafo le_grafo(FILE *input) {
       char viz[TAMANHO];
       
       strncpy(vert, linha, strcspn(linha, " "));
-      // printf("n: %d\n", g.n);
       trataVertice(&g, vert);
-      // printf("n: %d\n", g.n);
-      // g.v[g.n]->distancia=0;
       if (strcmp(linha, vert) != 0) {
         strncpy(viz, linha+strcspn(linha, " ")+1, strcspn(linha, "\0"));
         trataVizinho(&g, vert, viz);
@@ -113,6 +113,10 @@ grafo le_grafo(FILE *input) {
     fgets((char *)linha, TAMANHO, input);
   }
 
+  // for (int i=0;i<g.n;i++)
+  //   printf("--> %d %d %d\n", g.v[i]->estado, g.v[i]->distancia, g.v[i]->numVizinhos);
+  // printf("\n");
+
   if (input == stdin)
     clearerr(input);
 
@@ -123,15 +127,15 @@ grafo le_grafo(FILE *input) {
 //------------------------------------------------------------------------------
 // lê um vertice 
 
-vertice *le_vertice(grafo *g) {
-  vertice *v;
-  char *nome;
+vertice *le_vertice(grafo g) {
   int i;
+  vertice* v;
+  char nome[TAMANHO];
   printf("Digite o nome do vértice:\n");
   scanf("%s", nome);
-  for (i=0; i<g->n; i++)
-    if (strcmp(g->v[i]->nome, nome)==0)
-      v = g->v[i];
+  for (i=0; i<g.n; i++)
+    if (strcmp(g.v[i]->nome, nome)==0)
+      v = g.v[i];
 
   return v;
 }
@@ -177,12 +181,13 @@ void caminhos_minimos(vertice *raiz) {
   for (; !estaVazia(&fila) ;) {
     v = remover(&fila);
     for (i=0; i<v->numVizinhos; i++) {
-      w = v->vizinhos[i];
-      if (w->estado==0) {
-        w->pai = v;
-        w->distancia = w->pai->distancia + 1;
-        inserir(&fila, w);
-        w->estado = 1;
+      // w = v->vizinhos[i];
+      if (v->vizinhos[i]->estado==0) {
+      printf("pasate\n");
+        v->vizinhos[i]->pai = v;
+        v->vizinhos[i]->distancia = v->vizinhos[i]->pai->distancia + 1;
+        inserir(&fila, v->vizinhos[i]);
+        v->vizinhos[i]->estado = 1;
       }
     }
     v->estado = 2;

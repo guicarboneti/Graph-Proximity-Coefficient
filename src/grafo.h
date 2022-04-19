@@ -13,11 +13,11 @@
 typedef struct vertice vertice;
 struct vertice {
   char nome[TAMANHO];
+  int numVizinhos;
+  int distancia;
+  int estado;
   vertice** vizinhos;
   vertice* pai;
-  int estado;
-  int distancia;
-  int numVizinhos;
 };
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ grafo le_grafo(FILE *input);
 //------------------------------------------------------------------------------
 // pede para o usuário entrar com um vértice.
 
-vertice *le_vertice(grafo *g);
+vertice *le_vertice(grafo g);
 
 
 //------------------------------------------------------------------------------

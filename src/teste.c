@@ -15,11 +15,10 @@ int main(void) {
   // printf("estado: %d, dist: %d, numV: %d\n", v->estado, v->distancia, v->numVizinhos);
   if ( &g == NULL )
     return 1;
-
-  coef = coeficiente_proximidade(g,v);
-
-  printf ("O coeficiente de proximidade é %f\n", coef);
   imprimeGrafo(g);
+  coef = coeficiente_proximidade(g,v);
+  imprimeGrafo(g);
+  printf ("O coeficiente de proximidade é %lf\n", coef);
 
-  return ! destroi_grafo(g);
+  return destroi_grafo(g);
 }

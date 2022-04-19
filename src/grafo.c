@@ -177,13 +177,12 @@ void caminhos_minimos(vertice *raiz) {
   raiz->estado = 1;
   inserir(&fila, raiz);
   // printFila(&fila);
-  printf("%d %d\n", fila.v[fila.primeiro]->numVizinhos, raiz->numVizinhos);
+  // printf("%d %d\n", fila.v[fila.primeiro]->numVizinhos, raiz->numVizinhos);
   for (; !estaVazia(&fila) ;) {
     v = remover(&fila);
     for (i=0; i<v->numVizinhos; i++) {
       // w = v->vizinhos[i];
       if (v->vizinhos[i]->estado==0) {
-      printf("pasate\n");
         v->vizinhos[i]->pai = v;
         v->vizinhos[i]->distancia = v->vizinhos[i]->pai->distancia + 1;
         inserir(&fila, v->vizinhos[i]);
@@ -216,15 +215,11 @@ double coeficiente_proximidade(grafo g, vertice *v) {
   int somaDistVizinhos=0;
   int i,j;
   caminhos_minimos(v);
-  printf("\n-------distancias--------\n");
-  for (int i=0; i<g.n; i++) {
-    printf("%d\n", g.v[i]->distancia);
-  }
   for (i=0; i<g.n; i++) {
     if (strcmp(v->nome, g.v[i]->nome) != 0)
       somaDistVizinhos += g.v[i]->distancia;
   }
-  double Cp = g.n / somaDistVizinhos;
+  double Cp = (double) g.n / (double) somaDistVizinhos;
   return Cp;
 }
 

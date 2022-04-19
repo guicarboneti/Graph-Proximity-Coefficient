@@ -17,7 +17,6 @@ struct vertice {
   int distancia;
   int estado;
   vertice** vizinhos;
-  vertice* pai;
 };
 
 //------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ grafo le_grafo(FILE *input);
 
 
 //------------------------------------------------------------------------------
-// pede para o usuário entrar com um vértice.
+// lê um vertice e retorna um ponteiro para ele
 
 vertice *le_vertice(grafo g);
 

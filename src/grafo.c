@@ -113,10 +113,6 @@ grafo le_grafo(FILE *input) {
     fgets((char *)linha, TAMANHO, input);
   }
 
-  // for (int i=0;i<g.n;i++)
-  //   printf("--> %d %d %d\n", g.v[i]->estado, g.v[i]->distancia, g.v[i]->numVizinhos);
-  // printf("\n");
-
   if (input == stdin)
     clearerr(input);
 
@@ -125,7 +121,7 @@ grafo le_grafo(FILE *input) {
 
 
 //------------------------------------------------------------------------------
-// lê um vertice 
+// lê um vertice e retorna um ponteiro para ele
 
 vertice *le_vertice(grafo g) {
   int i;
@@ -149,61 +145,40 @@ void imprimeGrafo(grafo g) {
   }
 }
 
-//------------------------------------------------------------------------------
-// encontra o menor caminho entre cada par do vértice v de g
-// 
-
 void printFila(struct Fila *fila) {
   int cont, i;
-  // printf("%d %d\n", fila->primeiro, fila->n);
-
 	for ( cont=0, i= fila->primeiro; cont < fila->n; cont++){
-
 		printf("%s - ",fila->v[i++]->nome);
-
 		if (i == fila->capacidade)
 			i=0;
-
 	}
 	printf("\n\n");
 }
 
+//------------------------------------------------------------------------------
+// encontra o menor caminho entre cada par do vértice v de g
+// 
+
 void caminhos_minimos(vertice *raiz) {
   int i;
   struct Fila fila;
-  vertice *v, *w;
+  vertice *v;
   criarFila(&fila, 10);
   raiz->distancia = 0;
   raiz->estado = 1;
   inserir(&fila, raiz);
-  // printFila(&fila);
-  // printf("%d %d\n", fila.v[fila.primeiro]->numVizinhos, raiz->numVizinhos);
+
   for (; !estaVazia(&fila) ;) {
     v = remover(&fila);
     for (i=0; i<v->numVizinhos; i++) {
-      // w = v->vizinhos[i];
       if (v->vizinhos[i]->estado==0) {
-        v->vizinhos[i]->pai = v;
-        v->vizinhos[i]->distancia = v->vizinhos[i]->pai->distancia + 1;
+        v->vizinhos[i]->distancia = v->distancia + 1;   // distancia do pai + 1
         inserir(&fila, v->vizinhos[i]);
         v->vizinhos[i]->estado = 1;
       }
     }
     v->estado = 2;
   }
-  // v <- fila vazia
-  // r.dist <- 0
-  // enfile r em V
-  // r.estado <- 1
-  // Enquanto V!=0
-  //   desenfile um vértice v de V
-  //   Para cada w em fronteira de v em g
-  //     Se w.estado = 0
-  //       w.pai <- v
-  //       w.dist <= w.pai.dist + 1
-  //       enfile w em V
-  //       w.estado <- 1
-  //   v.estado <- 2
 }
 
 //------------------------------------------------------------------------------
@@ -222,9 +197,6 @@ double coeficiente_proximidade(grafo g, vertice *v) {
   double Cp = (double) g.n / (double) somaDistVizinhos;
   return Cp;
 }
-
-
-
 
 void criarFila( struct Fila *f, int c ) { 
 	f->capacidade = c;

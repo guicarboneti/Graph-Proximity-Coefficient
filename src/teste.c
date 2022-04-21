@@ -10,7 +10,7 @@ int main(void) {
 
   g = le_grafo(stdin);
   v = le_vertice(g);
-  if ( &g == NULL )
+  if ( (&g == NULL) || (v == NULL) )
     return 1;
 
   coef = coeficiente_proximidade(g,v);

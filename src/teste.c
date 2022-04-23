@@ -14,7 +14,7 @@ int main(void) {
     return 1;
 
   coef = coeficiente_proximidade(g,v);
-  printf ("O coeficiente de proximidade é %lf\n", coef);
+  printf ("\nO coeficiente de proximidade é %lf\n", coef);
 
   return destroi_grafo(g);
 }

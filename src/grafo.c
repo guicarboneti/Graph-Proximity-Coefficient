@@ -79,11 +79,8 @@ grafo le_grafo(FILE *input) {
   g.n = 0;
   g.v = (vertice**)calloc(50, sizeof(vertice*));
 
-  printf("Digite o nome do grafo:\n");
-  scanf("%s", g.nome);
-
   // Leitura
-  printf("Digite os vértices de %s:\n", g.nome);
+  printf("Digite os vértices do grafo:\n");
 
   int cont = 0, tammax = 50;
   char linha[TAMANHO];

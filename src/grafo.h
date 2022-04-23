@@ -26,7 +26,6 @@ struct vertice {
 
 typedef struct grafo grafo;
 struct grafo {
-  char nome[TAMANHO];
   vertice** v;
   int n;
 };

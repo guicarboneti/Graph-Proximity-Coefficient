@@ -160,7 +160,7 @@ void caminhos_minimos(vertice *raiz) {
   int i;
   struct Fila fila;
   vertice *v;
-  criarFila(&fila, 10);
+  criarFila(&fila, 50);
   raiz->distancia = 0;
   raiz->estado = 1;
   inserir(&fila, raiz);
